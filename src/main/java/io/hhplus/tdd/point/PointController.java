@@ -1,5 +1,6 @@
 package io.hhplus.tdd.point;
 
+import io.hhplus.tdd.point.DTO.PointRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -45,10 +46,10 @@ public class PointController {
     @PatchMapping("{id}/charge")
     public UserPoint charge(
             @PathVariable long id,
-            @RequestBody long amount
+            @RequestBody PointRequest request
     ) {
-        log.info("CHARGE userId: {}, amount: {}", id, amount);
-        return pointService.chargeUserPoint(id, amount);
+        log.info("CHARGE userId: {}, amount: {}", id, request.getAmount());
+        return pointService.chargeUserPoint(id, request.getAmount());
     }
 
     /**
@@ -57,9 +58,9 @@ public class PointController {
     @PatchMapping("{id}/use")
     public UserPoint use(
             @PathVariable long id,
-            @RequestBody long amount
+            @RequestBody PointRequest request
     ) {
-        log.info("USE userId: {}, amount: {}", id, amount);
-        return pointService.useUserPoint(id, amount);
+        log.info("USE userId: {}, amount: {}", id, request.getAmount());
+        return pointService.useUserPoint(id, request.getAmount());
     }
 }

@@ -43,6 +43,7 @@ public class PointService {
                 .orElseThrow(() -> new IllegalArgumentException("user not Found"));
 
         UserPoint updateUserPoint = new UserPoint(userPoint.id(), userPoint.point() - amount, System.currentTimeMillis());
+        userPointRepository.save(updateUserPoint);
         pointHistoryRepository.save(new PointHistory(id, amount, TransactionType.USE, System.currentTimeMillis()));
 
         return  updateUserPoint;
