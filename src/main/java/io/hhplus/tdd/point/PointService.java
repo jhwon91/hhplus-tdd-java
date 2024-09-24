@@ -26,38 +26,37 @@ public class PointService {
     */
 
     // 특정 사용자의 포인트 충전 로직 (포인트를 충전한다.)
-    public UserPoint chargeUserPoint(long id, long amount) {
-        UserPoint userPoint = userPointRepository.findById(id)
+    public UserPoint chargeUserPoint(long userId, long amount) {
+        UserPoint userPoint = userPointRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("user not Found"));
 
         UserPoint updateUserPoint = new UserPoint(userPoint.id(), userPoint.point() + amount, System.currentTimeMillis());
         userPointRepository.save(updateUserPoint);
-        pointHistoryRepository.save(new PointHistory(id, amount, TransactionType.CHARGE, System.currentTimeMillis()));
+        pointHistoryRepository.save(new PointHistory(0,userId, amount, TransactionType.CHARGE, System.currentTimeMillis()));
 
         return updateUserPoint;
     }
 
     // 특정 사용자의 포인트 사용 로직 (포인트를 사용한다.)
-    public UserPoint useUserPoint(long id, long amount) {
-        UserPoint userPoint = userPointRepository.findById(id)
+    public UserPoint useUserPoint(long userId, long amount) {
+        UserPoint userPoint = userPointRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("user not Found"));
 
         UserPoint updateUserPoint = new UserPoint(userPoint.id(), userPoint.point() - amount, System.currentTimeMillis());
         userPointRepository.save(updateUserPoint);
-        pointHistoryRepository.save(new PointHistory(id, amount, TransactionType.USE, System.currentTimeMillis()));
+        pointHistoryRepository.save(new PointHistory(0,userId, amount, TransactionType.USE, System.currentTimeMillis()));
 
         return  updateUserPoint;
     }
 
     // 특정 사용자의 포인트 조회 로직
-    public UserPoint getUserPoint(long id) {
-        return userPointRepository.findById(id)
+    public UserPoint getUserPoint(long userId) {
+        return userPointRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("user not Found"));
     }
 
     // 특정 사용자의 포인트 내역 조회(포인트 내역을 조회한다.)
-    public List<PointHistory> getUserPointHistory(long id) {
-        return pointHistoryRepository.findByUserId(id);
+    public List<PointHistory> getUserPointHistory(long userId) {
+        return pointHistoryRepository.findByUserId(userId);
     }
-
 }
