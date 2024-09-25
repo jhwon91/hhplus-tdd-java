@@ -27,9 +27,7 @@ public class PointService {
 
     // 특정 사용자의 포인트 충전 로직 (포인트를 충전한다.)
     public UserPoint chargeUserPoint(long userId, long amount) {
-        UserPoint userPoint = userPointRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
-
+        UserPoint userPoint = userPointRepository.findById(userId);
         UserPoint updateUserPoint = new UserPoint(userPoint.id(), userPoint.point() + amount, System.currentTimeMillis());
         userPointRepository.save(updateUserPoint);
         pointHistoryRepository.save(new PointHistory(0,userId, amount, TransactionType.CHARGE, System.currentTimeMillis()));
@@ -39,8 +37,7 @@ public class PointService {
 
     // 특정 사용자의 포인트 사용 로직 (포인트를 사용한다.)
     public UserPoint useUserPoint(long userId, long amount) {
-        UserPoint userPoint = userPointRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+        UserPoint userPoint = userPointRepository.findById(userId);
 
         if (userPoint.point() < amount) {
             throw new IllegalArgumentException("잔액이 부족합니다.");
@@ -55,8 +52,7 @@ public class PointService {
 
     // 특정 사용자의 포인트 조회 로직
     public UserPoint getUserPoint(long userId) {
-        return userPointRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+        return userPointRepository.findById(userId);
     }
 
     // 특정 사용자의 포인트 내역 조회(포인트 내역을 조회한다.)
