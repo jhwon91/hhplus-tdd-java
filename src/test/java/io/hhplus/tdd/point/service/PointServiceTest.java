@@ -10,14 +10,14 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.verification.VerificationMode;
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class PointServiceTest {
 
@@ -95,6 +95,8 @@ class PointServiceTest {
 
         //then
         assertEquals("잔액이 부족합니다.", exception.getMessage());
+        verify(userPointRepository, never()).save(any(UserPoint.class));
+        verify(pointHistoryRepository, never()).save(any(PointHistory.class));
     }
 
 }
