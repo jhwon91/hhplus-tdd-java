@@ -15,8 +15,8 @@ public class UserPointRepositoryImpl implements UserPointRepository{
     }
 
     @Override
-    public Optional<UserPoint> findById(Long id) {
-        return Optional.ofNullable(userPointTable.selectById(id));
+    public UserPoint findById(Long id) {
+        return userPointTable.selectById(id);
     }
 
     @Override
