@@ -2,41 +2,60 @@ package io.hhplus.tdd.point.repository;
 
 import io.hhplus.tdd.database.UserPointTable;
 import io.hhplus.tdd.point.UserPoint;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 class UserPointRepositoryImplTest {
 
-    UserPointRepository  userPointRepository= new UserPointRepositoryImpl(new UserPointTable());
+    @Mock
+    private UserPointTable userPointTable;
 
-    @Test
-    void findById() {
-        long userId = 1L;
-        long amount = 1000L;
+    @InjectMocks
+    private UserPointRepositoryImpl userPointRepository;
 
-        // 포인트 저장
-        userPointRepository.save(new UserPoint(userId, amount, System.currentTimeMillis()));
-
-        // 포인트 조회
-        UserPoint userPoint = userPointRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("user not Found"));
-
-        assertThat(amount).isEqualTo(userPoint.point());
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
     }
 
     @Test
-    void save() {
+    void 포인트_저장() {
+        //given
         long userId = 1L;
-        long initialAmount = 1000L;
-        long updatedAmount = 2000L;
+        long amount = 1000L;
 
-        // 초기 포인트 저장
-        userPointRepository.save(new UserPoint(userId, initialAmount, System.currentTimeMillis()));
-        userPointRepository.save(new UserPoint(userId, updatedAmount, System.currentTimeMillis()));
+        UserPoint userPoint = new UserPoint(userId, amount, System.currentTimeMillis());
+        when(userPointTable.insertOrUpdate(userId, amount)).thenReturn(userPoint);
 
-        // 포인트 조회
-        UserPoint userPoint = userPointRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("user not Found"));
+        //when
+        UserPoint result = userPointRepository.save(userPoint);
 
-        assertThat(updatedAmount).isEqualTo(userPoint.point());
+        //then
+        assertEquals(userPoint, result);
+        verify(userPointTable).insertOrUpdate(userId, amount);
+    }
+
+    @Test
+    void 포인트_조회() {
+        //given
+        long userId = 1L;
+        long amount = 1000L;
+        UserPoint userPoint = new UserPoint(userId, amount, System.currentTimeMillis());
+        when(userPointTable.selectById(userId)).thenReturn(userPoint);
+
+        //when
+        UserPoint result = userPointRepository.findById(userId);
+
+        //then
+        assertEquals(userPoint, result);
+        verify(userPointTable).selectById(userId);
+
     }
 }
